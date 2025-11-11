@@ -102,7 +102,7 @@
 
     <footer>Створено для Telegram WebApp — працює і поза Telegram для тесту</footer>
   </div>
-
+<!-- 
   <script>
     const tg = window.Telegram?.WebApp;
     if(tg){ tg.expand(); tg.setHeaderColor('#0b0f14'); tg.setBackgroundColor('#0b0f14'); }
@@ -267,6 +267,194 @@
     if(!tg){
       console.log('Running outside Telegram — dev mode enabled');
     }
-  </script>
+  </script>  -->
+
+    <script>
+  // --- DIAG: глобальний ловильник помилок ---
+  window.addEventListener('error', (e) => {
+    console.log('❌ JS Error:', e.message, e.filename, e.lineno, e.colno);
+  });
+
+  const tg = window.Telegram?.WebApp;
+  if (tg) {
+    tg.expand();
+    tg.setHeaderColor('#0b0f14');
+    tg.setBackgroundColor('#0b0f14');
+    console.log('✅ Telegram WebApp detected:', tg.platform);
+  } else {
+    console.log('⚠️ Telegram WebApp not detected. Running in browser.');
+  }
+
+  const intro = document.getElementById('stage-intro');
+  const shuffle = document.getElementById('stage-shuffle');
+  const pick = document.getElementById('stage-pick');
+  const reveal = document.getElementById('stage-reveal');
+
+  const btnShuffle = document.getElementById('btn-shuffle');
+  const btnReset = document.getElementById('btn-reset');
+  const btnSend = document.getElementById('btn-send');
+
+  const shuffleBar = document.getElementById('shuffle-bar');
+  const shuffleCaption = document.getElementById('shuffle-caption');
+  const cardsWrap = document.getElementById('cards');
+
+  const revealArea = document.getElementById('reveal-area');
+  const workBar = document.getElementById('work-bar');
+  const workCaption = document.getElementById('work-caption');
+
+  // Simple tarot list
+  const TAROT = [
+    'Дурень','Маг','Жриця','Імператриця','Імператор','Ієрофант','Коханці','Колісниця','Сила',
+    'Відлюдник','Колесо Фортуни','Справедливість','Повішений','Смерть','Поміркованість','Диявол',
+    'Вежа','Зірка','Місяць','Сонце','Суд','Світ'
+  ];
+
+  const state = {
+    candidates: [],
+    chosen: null
+  };
+
+  function randCard(){
+    const name = TAROT[Math.floor(Math.random()*TAROT.length)];
+    const upright = Math.random() > 0.4;
+    return { name, upright };
+  }
+
+  function el(tag, cls){ const n=document.createElement(tag); if(cls) n.className=cls; return n; }
+
+  function setStage(s){
+    for(const n of [intro, shuffle, pick, reveal]) n.classList.add('hidden');
+    s.classList.remove('hidden'); s.classList.add('fade');
+  }
+
+  function cardNode(faceText, pos){
+    const c = el('div','card');
+    const inner = el('div','card-inner');
+    const back = el('div','face back'); back.textContent = '🂠';
+    const front = el('div','face front');
+    const h = el('h3'); h.textContent = faceText; front.appendChild(h);
+    const p = el('div','pos'); p.textContent = pos; front.appendChild(p);
+    c.appendChild(inner); inner.append(back, front);
+    return c;
+  }
+
+  function shuffleFlow(){
+    setStage(shuffle);
+    shuffleBar.style.width = '0%';
+    const steps = [
+      'Перемішую колоду…',
+      'Збираю енергію…',
+      'Вирівнюю потоки…',
+      'Колода наповнюється…'
+    ];
+    let i=0, p=0;
+    const id = setInterval(()=>{
+      p = Math.min(100, p + 8 + Math.random()*6);
+      shuffleBar.style.width = p+'%';
+      if(i < steps.length && p > (i+1)*(100/steps.length)){
+        shuffleCaption.textContent = steps[i++];
+      }
+      if(p>=100){ clearInterval(id); setTimeout(()=>startPick(), 300); }
+    }, 260);
+  }
+
+  function startPick(){
+    state.candidates = [randCard(), randCard(), randCard()];
+    state.chosen = null;
+    setStage(pick);
+    cardsWrap.innerHTML='';
+    for(let i=0;i<3;i++){
+      const n = cardNode('—','—');
+      n.dataset.index = i;
+      n.addEventListener('click', ()=>choose(i, n));
+      cardsWrap.appendChild(n);
+    }
+  }
+
+  function choose(index){
+    const c = state.candidates[index];
+    state.chosen = { index, ...c };
+    setStage(reveal);
+
+    revealArea.innerHTML='';
+    const label = c.name;
+    const pos = c.upright ? '⬆️ Пряма' : '⬇️ Перевернута';
+    const card = cardNode(label, pos);
+    revealArea.appendChild(card);
+    setTimeout(()=>card.classList.add('flip'), 60);
+
+    workBar.style.width='0%';
+    const phrases = [
+      '✨ Звертаюся до вищих сил…',
+      '🔮 Аналізую карти…',
+      '📜 Складаю тлумачення…',
+      '💫 Відчуваю енергію долі…'
+    ];
+    let s=0, step=0;
+    const id = setInterval(()=>{
+      step+=1; const pct = Math.min(100, step*22);
+      workBar.style.width = pct+'%';
+      if(s<phrases.length){ workCaption.textContent = phrases[s++]; }
+      if(pct>=100){ clearInterval(id); }
+    }, 420);
+  }
+
+  // --- НАДІЙНА відправка в бота + debug ---
+  async function sendToBot(){
+    try{
+      // 0) Перевірка стану
+      if(!state.chosen){
+        if(tg) tg.showAlert('Спершу обери карту 🙏');
+        else alert('Спершу обери карту 🙏');
+        return;
+      }
+
+      const payload = {
+        action: 'pick_card',
+        chosen: state.chosen,
+        candidates: state.candidates
+      };
+
+      console.log('📤 Надсилаю в бота:', payload);
+
+      // 1) Якщо в Telegram — використовуємо офіційний API повідомлень
+      if (tg) {
+        // Підтвердження всередині Telegram
+        await tg.showAlert('✅ Вибір відправлено в бота');
+        tg.sendData(JSON.stringify(payload));
+
+        // невелика пауза, щоб не закрити до відправки
+        setTimeout(()=> tg.close(), 400);
+      } else {
+        // 2) Якщо відкрито у браузері — просто показуємо payload
+        alert('⚠️ WebApp не в Telegram — режим тесту.\n\n' + JSON.stringify(payload, null, 2));
+      }
+    } catch(e){
+      console.log('❌ sendToBot error:', e);
+      if(tg) tg.showAlert('❌ Помилка при відправці: ' + e);
+      else alert('❌ Помилка: ' + e);
+    }
+  }
+
+  // --- Жорстка діагностика кліків ---
+  document.addEventListener('click', (e) => {
+    console.log('🖱 click:', e.target && (e.target.id || e.target.className || e.target.tagName));
+  });
+
+  console.log('🔍 btnSend:', btnSend);
+  console.log('🔍 btnShuffle:', btnShuffle);
+  console.log('🔍 btnReset:', btnReset);
+
+  btnShuffle.addEventListener('click', shuffleFlow);
+  btnReset && btnReset.addEventListener('click', ()=>setStage(intro));
+  btnSend.addEventListener('click', sendToBot);
+
+  if(!tg){
+    console.log('Running outside Telegram — dev mode enabled');
+  }
+</script>
+
+
+  
 </body>
 </html>
