@@ -222,20 +222,42 @@
       }, 420);
     }
 
+    // function sendToBot(){
+    //   const payload = {
+    //     action: 'pick_card',
+    //     chosen: state.chosen,      // {index, name, upright}
+    //     candidates: state.candidates
+    //   };
+    //   console.log("📤 Надсилаю в бота:", payload);
+    //   if(tg){
+    //     tg.sendData(JSON.stringify(payload));
+    //     tg.close();
+    //   } else {
+    //     alert('Payload to bot (debug):\n'+JSON.stringify(payload,null,2));
+    //   }
+    // }
     function sendToBot(){
-      const payload = {
+    const payload = {
         action: 'pick_card',
         chosen: state.chosen,      // {index, name, upright}
         candidates: state.candidates
-      };
-      console.log("📤 Надсилаю в бота:", payload);
-      if(tg){
+    };
+    
+    console.log("📤 Надсилаю в бота:", payload);
+    alert("✅ Надіслано в бота!\n\n" + JSON.stringify(payload, null, 2)); // ⬅️ тестове підтвердження
+    
+    if(tg){
+        try {
         tg.sendData(JSON.stringify(payload));
         tg.close();
-      } else {
-        alert('Payload to bot (debug):\n'+JSON.stringify(payload,null,2));
-      }
+        } catch(e){
+        alert("❌ Помилка при відправці: " + e);
+        }
+    } else {
+        alert("⚠️ WebApp не в Telegram — режим тесту.\n\n" + JSON.stringify(payload, null, 2));
     }
+    }
+
 
     btnShuffle.addEventListener('click', shuffleFlow);
     btnReset.addEventListener('click', ()=>setStage(intro));
