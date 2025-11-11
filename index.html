@@ -228,6 +228,7 @@
         chosen: state.chosen,      // {index, name, upright}
         candidates: state.candidates
       };
+      console.log("📤 Надсилаю в бота:", payload);
       if(tg){
         tg.sendData(JSON.stringify(payload));
         tg.close();
