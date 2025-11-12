@@ -51,49 +51,59 @@ function setStage(s){[intro,shuffle,pick,reveal].forEach(n=>n.classList.add('hid
 //   return c;
 // }
 
-function cardNode(faceText,pos,img,isBack=false,isReversed=false){
-  const c=el('div','card');
-  const inner=el('div','card-inner');
-  const back=el('div','face back');
-  const front=el('div','face front');
-  if(img) front.style.backgroundImage=`url('${img}')`;
-  const h=el('h3');h.textContent=faceText;
-  const p=el('div','pos');p.textContent=pos;
-  front.append(h,p);
-  inner.append(back,front);
-  c.append(inner);
+function cardNode(faceText, pos, img, isBack = false, isReversed = false) {
+  const c = el('div', 'card');
+  const inner = el('div', 'card-inner');
+  const back = el('div', 'face back');
+  const front = el('div', 'face front');
 
-  // якщо перевернута карта — візуально обертаємо
-  if(isReversed) {
-    front.style.transform = "rotate(180deg)";
-    h.style.transform = "rotate(180deg)";
-    p.style.transform = "rotate(180deg)";
+  if (img) {
+    front.style.backgroundImage = `url('${img}')`;
+    front.style.backgroundSize = "cover";
+    front.style.backgroundPosition = "center";
   }
+
+  const h = el('h3');
+  h.textContent = faceText;
+  const p = el('div', 'pos');
+  p.textContent = pos;
+  front.append(h, p);
+
+  // якщо карта перевернута — обертаємо всю карту на 180°
+  if (isReversed) {
+    front.classList.add('reversed');
+  }
+
+  inner.append(back, front);
+  c.append(inner);
   return c;
 }
 
-function choose(index){
-  const c=state.candidates[index];
-  state.chosen={index,...c};
+function choose(index) {
+  const c = state.candidates[index];
+  state.chosen = { index, ...c };
   setStage(reveal);
-  revealArea.innerHTML='';
-  const label=c.name;
-  const pos=c.upright?'⬆️ Пряма':'⬇️ Перевернута';
-  const img=cardImage(c.name,c.upright);
-  const card=cardNode(label,pos,img,false,!c.upright); // <--- додаємо !upright
-  revealArea.appendChild(card);
-  setTimeout(()=>card.classList.add('flip'),100);
+  revealArea.innerHTML = '';
 
-  workBar.style.width='0%';
-  const phrases=['✨ Міньйони звертаються до долі…','🔮 Аналізують карту…','📜 Готують передбачення…','💫 Бананова енергія активована!'];
-  let s=0,step=0;
-  const id=setInterval(()=>{
-    step++;const pct=Math.min(100,step*22);
-    workBar.style.width=pct+'%';
-    if(s<phrases.length)workCaption.textContent=phrases[s++];
-    if(pct>=100)clearInterval(id);
-  },420);
+  const label = c.name;
+  const pos = c.upright ? '⬆️ Пряма' : '⬇️ Перевернута';
+  const img = cardImage(c.name, true); // завжди беремо пряме зображення
+  const card = cardNode(label, pos, img, false, !c.upright); // якщо !upright — додає клас reversed
+  revealArea.appendChild(card);
+
+  setTimeout(() => card.classList.add('flip'), 100);
+
+  workBar.style.width = '0%';
+  const phrases = ['✨ Міньйони звертаються до долі…', '🔮 Аналізують карту…', '📜 Готують передбачення…', '💫 Бананова енергія активована!'];
+  let s = 0, step = 0;
+  const id = setInterval(() => {
+    step++; const pct = Math.min(100, step * 22);
+    workBar.style.width = pct + '%';
+    if (s < phrases.length) workCaption.textContent = phrases[s++];
+    if (pct >= 100) clearInterval(id);
+  }, 420);
 }
+
 
 
 function randCard(){
