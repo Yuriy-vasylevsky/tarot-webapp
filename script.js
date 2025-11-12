@@ -38,7 +38,20 @@ const state = { candidates: [], chosen: null };
 function el(tag,cls){const n=document.createElement(tag);if(cls)n.className=cls;return n;}
 function setStage(s){[intro,shuffle,pick,reveal].forEach(n=>n.classList.add('hidden'));s.classList.remove('hidden');s.classList.add('fade');}
 
-function cardNode(faceText,pos,img,isBack=false){
+// function cardNode(faceText,pos,img,isBack=false){
+//   const c=el('div','card');
+//   const inner=el('div','card-inner');
+//   const back=el('div','face back');
+//   const front=el('div','face front');
+//   if(img) front.style.backgroundImage=`url('${img}')`;
+//   const h=el('h3');h.textContent=faceText;
+//   const p=el('div','pos');p.textContent=pos;
+//   front.append(h,p);
+//   inner.append(back,front);c.append(inner);
+//   return c;
+// }
+
+function cardNode(faceText,pos,img,isBack=false,isReversed=false){
   const c=el('div','card');
   const inner=el('div','card-inner');
   const back=el('div','face back');
@@ -47,9 +60,41 @@ function cardNode(faceText,pos,img,isBack=false){
   const h=el('h3');h.textContent=faceText;
   const p=el('div','pos');p.textContent=pos;
   front.append(h,p);
-  inner.append(back,front);c.append(inner);
+  inner.append(back,front);
+  c.append(inner);
+
+  // якщо перевернута карта — візуально обертаємо
+  if(isReversed) {
+    front.style.transform = "rotate(180deg)";
+    h.style.transform = "rotate(180deg)";
+    p.style.transform = "rotate(180deg)";
+  }
   return c;
 }
+
+function choose(index){
+  const c=state.candidates[index];
+  state.chosen={index,...c};
+  setStage(reveal);
+  revealArea.innerHTML='';
+  const label=c.name;
+  const pos=c.upright?'⬆️ Пряма':'⬇️ Перевернута';
+  const img=cardImage(c.name,c.upright);
+  const card=cardNode(label,pos,img,false,!c.upright); // <--- додаємо !upright
+  revealArea.appendChild(card);
+  setTimeout(()=>card.classList.add('flip'),100);
+
+  workBar.style.width='0%';
+  const phrases=['✨ Міньйони звертаються до долі…','🔮 Аналізують карту…','📜 Готують передбачення…','💫 Бананова енергія активована!'];
+  let s=0,step=0;
+  const id=setInterval(()=>{
+    step++;const pct=Math.min(100,step*22);
+    workBar.style.width=pct+'%';
+    if(s<phrases.length)workCaption.textContent=phrases[s++];
+    if(pct>=100)clearInterval(id);
+  },420);
+}
+
 
 function randCard(){
   const name=TAROT[Math.floor(Math.random()*TAROT.length)];
@@ -81,28 +126,28 @@ function startPick(){
   }
 }
 
-function choose(index){
-  const c=state.candidates[index];
-  state.chosen={index,...c};
-  setStage(reveal);
-  revealArea.innerHTML='';
-  const label=c.name;
-  const pos=c.upright?'⬆️ Пряма':'⬇️ Перевернута';
-  const img=cardImage(c.name,c.upright);
-  const card=cardNode(label,pos,img);
-  revealArea.appendChild(card);
-  setTimeout(()=>card.classList.add('flip'),100);
+// function choose(index){
+//   const c=state.candidates[index];
+//   state.chosen={index,...c};
+//   setStage(reveal);
+//   revealArea.innerHTML='';
+//   const label=c.name;
+//   const pos=c.upright?'⬆️ Пряма':'⬇️ Перевернута';
+//   const img=cardImage(c.name,c.upright);
+//   const card=cardNode(label,pos,img);
+//   revealArea.appendChild(card);
+//   setTimeout(()=>card.classList.add('flip'),100);
 
-  workBar.style.width='0%';
-  const phrases=['✨ Міньйони звертаються до долі…','🔮 Аналізують карту…','📜 Готують передбачення…','💫 Бананова енергія активована!'];
-  let s=0,step=0;
-  const id=setInterval(()=>{
-    step++;const pct=Math.min(100,step*22);
-    workBar.style.width=pct+'%';
-    if(s<phrases.length)workCaption.textContent=phrases[s++];
-    if(pct>=100)clearInterval(id);
-  },420);
-}
+//   workBar.style.width='0%';
+//   const phrases=['✨ Міньйони звертаються до долі…','🔮 Аналізують карту…','📜 Готують передбачення…','💫 Бананова енергія активована!'];
+//   let s=0,step=0;
+//   const id=setInterval(()=>{
+//     step++;const pct=Math.min(100,step*22);
+//     workBar.style.width=pct+'%';
+//     if(s<phrases.length)workCaption.textContent=phrases[s++];
+//     if(pct>=100)clearInterval(id);
+//   },420);
+// }
 
 function sendToBot(){
   const payload={action:'pick_card',chosen:state.chosen,candidates:state.candidates};
