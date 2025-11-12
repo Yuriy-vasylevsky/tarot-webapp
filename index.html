@@ -3,271 +3,57 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Таро — обери одну з трьох</title>
+  <title>Minion Tarot — Обери свою бананову долю 🍌🔮</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    :root{
-      --bg:#0b0f14; --panel:#121820; --accent:#9c7cff; --muted:#9bb0c2; --good:#35d49a;
-      --card-w:110px; --card-h:160px; --radius:16px; --dur:300ms;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0; font-family:system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, 'Helvetica Neue', Arial, Noto Sans, sans-serif; background:radial-gradient(1200px 800px at 70% -10%, #1a1f2a 0%, #0b0f14 45%, #05070a 100%); color:#eef4ff}
-    .wrap{min-height:100%; display:grid; grid-template-rows:auto 1fr auto; gap:14px}
-    header{display:flex; align-items:center; justify-content:center; padding:14px 16px; background:transparent}
-    header h1{font-size:18px; font-weight:700; letter-spacing:.3px; margin:0; color:#fff}
-
-    .panel{width:100%; max-width:880px; margin:0 auto; padding:16px;}
-    .stage{background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:18px; padding:16px}
-
-    .hint{color:var(--muted); font-size:14px; margin:6px 0 14px}
-
-    .center{display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap}
-
-    .btn{appearance:none; border:1px solid rgba(255,255,255,.15); background:linear-gradient(180deg, #1b2030, #121826); color:#fff; padding:12px 14px; border-radius:12px; font-weight:700; cursor:pointer; transition:transform .08s ease, box-shadow .2s ease; box-shadow:0 6px 20px rgba(0,0,0,.35)}
-    .btn:active{transform:translateY(1px)}
-    .btn.primary{border-color:rgba(156,124,255,.6); background:linear-gradient(180deg, #2c2450, #1d1636)}
-
-    .cards{display:flex; gap:16px; align-items:center; justify-content:center; flex-wrap:wrap; padding:8px}
-    .card{width:var(--card-w); height:var(--card-h); perspective:1000px}
-    .card-inner{position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform var(--dur) ease}
-    .card.flip .card-inner{transform:rotateY(180deg)}
-    .face{position:absolute; inset:0; border-radius:var(--radius); backface-visibility:hidden; overflow:hidden; box-shadow:0 10px 40px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.08)}
-    .back{background:
-      radial-gradient(60% 60% at 50% 35%, rgba(156,124,255,.35), transparent 60%),
-      repeating-conic-gradient(from 0deg, rgba(255,255,255,.06) 0deg 10deg, transparent 10deg 20deg),
-      linear-gradient(180deg, #1d2232, #0f1320);
-      display:grid; place-items:center; font-size:48px}
-    .front{transform:rotateY(180deg); background:linear-gradient(180deg, #0e1624, #0b0f14); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px; text-align:center}
-    .front h3{margin:6px 6px 2px; font-size:15px}
-    .front .pos{opacity:.9; font-size:13px; color:#b9c6d4}
-
-    .progress{height:12px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:999px; overflow:hidden}
-    .bar{height:100%; width:0%; background:linear-gradient(90deg, #9c7cff, #35d49a); transition:width .35s cubic-bezier(.2,.8,.2,1)}
-
-    footer{padding:16px; text-align:center; color:var(--muted); font-size:13px}
-    .fade{animation:fade .35s ease both}
-    @keyframes fade{from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:translateY(0)}}
-
-    .shuffleRow{display:flex; gap:8px; justify-content:center; margin:10px 0 4px}
-    .dot{width:10px; height:10px; border-radius:50%; background:#283246; animation:bounce 1.4s infinite}
-    .dot:nth-child(2){animation-delay:.15s} .dot:nth-child(3){animation-delay:.3s}
-    @keyframes bounce{0%,80%,100%{transform:scale(0.8); opacity:.7} 40%{transform:scale(1); opacity:1}}
-
-    .hidden{display:none !important}
-  </style>
 </head>
 <body>
   <div class="wrap">
-    <header><h1>Таро — обери одну з трьох</h1></header>
+    <header><h1>Minion Tarot — Обери свою бананову долю 🍌🔮</h1></header>
 
     <main class="panel">
-      <!-- stage: intro -->
+      <!-- Вступ -->
       <section id="stage-intro" class="stage fade">
-        <div class="hint">Перед витягуванням карти обміняйся енергією з колодою.</div>
+        <div class="hint">Перед витягуванням карт міньйони збирають магічну енергію 🍌</div>
         <div class="center">
-          <button id="btn-shuffle" class="btn primary">🌀 Перемішати карти</button>
+          <button id="btn-shuffle" class="btn primary">🌀 Перемішати колоду</button>
         </div>
       </section>
 
-      <!-- stage: shuffle / energy -->
+      <!-- Перемішування -->
       <section id="stage-shuffle" class="stage hidden">
-        <div class="hint" id="shuffle-caption">Перемішую колоду…</div>
+        <div class="hint" id="shuffle-caption">Міньйони тасують карти…</div>
         <div class="shuffleRow" aria-hidden="true">
           <div class="dot"></div><div class="dot"></div><div class="dot"></div>
         </div>
-        <div class="progress" style="margin-top:12px"><div id="shuffle-bar" class="bar"></div></div>
+        <div class="progress"><div id="shuffle-bar" class="bar"></div></div>
       </section>
 
-      <!-- stage: pick -->
+      <!-- Вибір карти -->
       <section id="stage-pick" class="stage hidden">
-        <div class="hint">Відчуй енергію кожної карти та вибери ту, що кличе тебе.</div>
+        <div class="hint">Відчуй бананову мудрість Всесвіту і вибери карту.</div>
         <div id="cards" class="cards"></div>
         <div class="center" style="margin-top:12px">
           <button id="btn-reset" class="btn">🔁 Почати заново</button>
         </div>
       </section>
 
-      <!-- stage: reveal + send -->
+      <!-- Розкриття -->
       <section id="stage-reveal" class="stage hidden">
         <div class="hint" id="reveal-caption">🪄 Карта проявляється…</div>
         <div class="cards" id="reveal-area"></div>
-        <div class="progress" style="margin:10px 0 6px"><div id="work-bar" class="bar"></div></div>
-        <div class="hint" id="work-caption">✨ Звертаюся до вищих сил…</div>
+        <div class="progress"><div id="work-bar" class="bar"></div></div>
+        <div class="hint" id="work-caption">✨ Міньйони аналізують долю…</div>
         <div class="center" style="margin-top:10px">
           <button id="btn-send" class="btn primary">📨 Надіслати вибір боту</button>
         </div>
       </section>
     </main>
 
-    <footer>Створено для Telegram WebApp — працює і поза Telegram для тесту</footer>
+    <footer>© Minion Tarot — 2025 | Весело і магічно 🍌</footer>
   </div>
 
-  <script>
-    const tg = window.Telegram?.WebApp;
-    if(tg){ tg.expand(); tg.setHeaderColor('#0b0f14'); tg.setBackgroundColor('#0b0f14'); }
-
-    const intro = document.getElementById('stage-intro');
-    const shuffle = document.getElementById('stage-shuffle');
-    const pick = document.getElementById('stage-pick');
-    const reveal = document.getElementById('stage-reveal');
-
-    const btnShuffle = document.getElementById('btn-shuffle');
-    const btnReset = document.getElementById('btn-reset');
-    const btnSend = document.getElementById('btn-send');
-
-    const shuffleBar = document.getElementById('shuffle-bar');
-    const shuffleCaption = document.getElementById('shuffle-caption');
-    const cardsWrap = document.getElementById('cards');
-
-    const revealArea = document.getElementById('reveal-area');
-    const workBar = document.getElementById('work-bar');
-    const workCaption = document.getElementById('work-caption');
-
-    // Simple tarot list (UA name only for demo). In bot you can map to your TAROT_CARDS.
-    const TAROT = [
-      'Дурень','Маг','Жриця','Імператриця','Імператор','Ієрофант','Коханці','Колісниця','Сила','Відлюдник','Колесо Фортуни','Справедливість','Повішений','Смерть','Поміркованість','Диявол','Вежа','Зірка','Місяць','Сонце','Суд','Світ'
-    ];
-
-    const state = {
-      candidates: [], // 3 cards with orientation
-      chosen: null
-    };
-
-    function randCard(){
-      const name = TAROT[Math.floor(Math.random()*TAROT.length)];
-      const upright = Math.random() > 0.4; // 60% upright
-      return { name, upright };
-    }
-
-    function el(tag, cls){ const n=document.createElement(tag); if(cls) n.className=cls; return n; }
-
-    function setStage(s){
-      for(const n of [intro, shuffle, pick, reveal]) n.classList.add('hidden');
-      s.classList.remove('hidden'); s.classList.add('fade');
-    }
-
-    function cardNode(faceText, pos){
-      const c = el('div','card');
-      const inner = el('div','card-inner');
-      const back = el('div','face back'); back.textContent = '🂠';
-      const front = el('div','face front');
-      const h = el('h3'); h.textContent = faceText; front.appendChild(h);
-      const p = el('div','pos'); p.textContent = pos; front.appendChild(p);
-      c.appendChild(inner); inner.append(back, front); return c;
-    }
-
-    function shuffleFlow(){
-      setStage(shuffle);
-      shuffleBar.style.width = '0%';
-      const steps = [
-        'Перемішую колоду…',
-        'Збираю енергію…',
-        'Вирівнюю потоки…',
-        'Колода наповнюється…'
-      ];
-      let i=0, p=0;
-      const id = setInterval(()=>{
-        p = Math.min(100, p + 8 + Math.random()*6);
-        shuffleBar.style.width = p+'%';
-        if(i < steps.length && p > (i+1)*(100/steps.length)){
-          shuffleCaption.textContent = steps[i++];
-        }
-        if(p>=100){ clearInterval(id); setTimeout(()=>startPick(), 300); }
-      }, 260);
-    }
-
-    function startPick(){
-      // generate 3 unique candidates
-      state.candidates = [randCard(), randCard(), randCard()];
-      setStage(pick);
-      cardsWrap.innerHTML='';
-      for(let i=0;i<3;i++){
-        const n = cardNode('—','—');
-        n.dataset.index = i;
-        n.addEventListener('click', ()=>choose(i, n));
-        cardsWrap.appendChild(n);
-      }
-    }
-
-    function choose(index, node){
-      // reveal animation caption + progress while we also prepare to send
-      const c = state.candidates[index];
-      state.chosen = { index, ...c };
-      setStage(reveal);
-
-      // Show one flipped card with the real face
-      revealArea.innerHTML='';
-      const label = c.name;
-      const pos = c.upright ? '⬆️ Пряма' : '⬇️ Перевернута';
-      const card = cardNode(label, pos);
-      revealArea.appendChild(card);
-      // flip
-      setTimeout(()=>card.classList.add('flip'), 60);
-
-      // Work bar + phrases (run once, not loop)
-      workBar.style.width='0%';
-      const phrases = [
-        '✨ Звертаюся до вищих сил…',
-        '🔮 Аналізую карти…',
-        '📜 Складаю тлумачення…',
-        '💫 Відчуваю енергію долі…'
-      ];
-      let s=0, step=0;
-      const id = setInterval(()=>{
-        step+=1; const pct = Math.min(100, step*22);
-        workBar.style.width = pct+'%';
-        if(s<phrases.length){ workCaption.textContent = phrases[s++]; }
-        if(pct>=100){ clearInterval(id); }
-      }, 420);
-    }
-
-    // function sendToBot(){
-    //   const payload = {
-    //     action: 'pick_card',
-    //     chosen: state.chosen,      // {index, name, upright}
-    //     candidates: state.candidates
-    //   };
-    //   console.log("📤 Надсилаю в бота:", payload);
-    //   if(tg){
-    //     tg.sendData(JSON.stringify(payload));
-    //     tg.close();
-    //   } else {
-    //     alert('Payload to bot (debug):\n'+JSON.stringify(payload,null,2));
-    //   }
-    // }
-    function sendToBot(){
-    const payload = {
-        action: 'pick_card',
-        chosen: state.chosen,      // {index, name, upright}
-        candidates: state.candidates
-    };
-    
-    console.log("📤 Надсилаю в бота:", payload);
-    alert("✅ Надіслано в бота!\n\n" + JSON.stringify(payload, null, 2)); // ⬅️ тестове підтвердження
-    
-    if(tg){
-        try {
-        tg.sendData(JSON.stringify(payload));
-        tg.close();
-        } catch(e){
-        alert("❌ Помилка при відправці: " + e);
-        }
-    } else {
-        alert("⚠️ WebApp не в Telegram — режим тесту.\n\n" + JSON.stringify(payload, null, 2));
-    }
-    }
-
-
-    btnShuffle.addEventListener('click', shuffleFlow);
-    btnReset.addEventListener('click', ()=>setStage(intro));
-    btnSend.addEventListener('click', sendToBot);
-
-    // If opened directly in browser for testing
-    if(!tg){
-      console.log('Running outside Telegram — dev mode enabled');
-    }
-  </script> 
-  
+  <script src="script.js"></script>
 </body>
 </html>
