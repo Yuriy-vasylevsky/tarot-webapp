@@ -1,85 +1,3 @@
-/* :root {
-  --bg:#0b0f14; --accent:#ffde59; --muted:#b4b4b4; --good:#35d49a;
-  --card-w:110px; --card-h:160px; --radius:16px; --dur:350ms;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family:"Comic Neue",system-ui;
-  background:radial-gradient(circle at 50% 20%, #2e3192 0%, #1b1464 40%, #0b0f14 90%);
-  background-image:url("images/bg_minion_magic.jpg");
-  background-size:cover;
-  background-position:center;
-  color:#fff8d9;
-  text-shadow:0 1px 4px rgba(0,0,0,.7);
-}
-.wrap{min-height:100%;display:grid;grid-template-rows:auto 1fr auto;gap:14px}
-header{text-align:center;padding:14px}
-header h1{margin:0;font-size:20px;color:#ffde59;text-shadow:0 0 6px rgba(0,0,0,.8)}
-.panel{width:100%;max-width:880px;margin:0 auto;padding:16px;}
-.stage{background:rgba(0,0,0,0.35);border:2px solid rgba(255,255,255,0.1);border-radius:18px;padding:16px}
-.hint{color:var(--muted);font-size:15px;margin:6px 0 14px}
-.center{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
-
-.btn{appearance:none;border:2px solid #ffde59;background:linear-gradient(180deg,#3c3e7a,#1b1464);
-color:#fff;padding:12px 14px;border-radius:12px;font-weight:700;cursor:pointer;transition:transform .1s ease,box-shadow .2s ease;
-box-shadow:0 6px 20px rgba(0,0,0,.4)}
-.btn.primary{background:linear-gradient(180deg,#ffde59,#e8c22a);color:#1b1464}
-.btn:active{transform:translateY(1px)}
-
-.cards{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;padding:8px}
-.card{width:var(--card-w);height:var(--card-h);perspective:1000px;border-radius:var(--radius);
-animation:bounce 2s infinite ease-in-out}
-.card-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform var(--dur) ease}
-.card.flip .card-inner{transform:rotateY(180deg)}
-.face{position:absolute;inset:0;border-radius:var(--radius);backface-visibility:hidden;overflow:hidden;
-box-shadow:0 10px 40px rgba(0,0,0,.5),inset 0 0 0 2px rgba(255,222,89,.4)}
-.face.back{background:url("images/cards/back_minion.jpg") center/cover no-repeat}
-.face.front{transform:rotateY(180deg);background:#000;background-size:cover;background-position:center}
-.front h3{margin:6px;font-size:15px}
-.front .pos{opacity:.9;font-size:13px;color:#ffde59}
-
-.progress{height:10px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:999px;overflow:hidden}
-.bar{height:100%;width:0%;background:linear-gradient(90deg,#ffde59,#35d49a);transition:width .35s ease}
-
-footer{text-align:center;color:#bfbfbf;font-size:13px;padding:12px}
-
-.hidden{display:none!important}
-.fade{animation:fade .35s ease both}
-@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-
-.face.front {
-  transform: rotateY(180deg);
-  background-size: cover;
-  background-position: center;
-  transition: transform 0.6s ease;
-}
-
-
-.card-inner .face.front[style*="rotate(180deg)"] {
-  box-shadow: 0 0 25px rgba(255,50,50,0.5);
-}
-
-
-.face.front {
-  transform: rotateY(180deg);
-  background-size: cover;
-  background-position: center;
-  transition: transform 0.6s ease;
-}
-
-
-.face.front.reversed {
-  transform: rotateY(180deg) rotate(180deg);
-}
-
-.face.front.reversed h3,
-.face.front.reversed .pos {
-  transform: rotate(180deg);
-} */
-
 
 :root {
   --accent: #ffde59;
@@ -347,14 +265,14 @@ footer {
 
 .shuffle-scene {
   width: 100%;
-  height: 260px;
+  height: 380px;
   position: relative;
   margin-top: 15px;
 }
 
 .shuffle-table {
   width: 100%;
-  height: 180px;
+  height: 350px;
   background: rgba(70, 40, 10, 0.6);
   border-radius: 22px;
   position: absolute;
@@ -365,10 +283,10 @@ footer {
 
 .shuffle-deck {
   position: absolute;
-  bottom: 110px;
+  bottom: 200px;
   left: 50%;
   transform: translateX(-40px);
-  width: 80px;
+  width: 180px;
   height: 120px;
 }
 
