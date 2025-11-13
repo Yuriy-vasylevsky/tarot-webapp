@@ -272,25 +272,16 @@ function cardNode(card, index){
 // === Перемішування ===
 function shuffleFlow(){
   setStage(shuffle);
-  shuffleBar.style.width = '0%';
-  const steps = [
-    "Міньйони тасують карти…",
-    "Збирають магічну енергію…",
-    "Вирівнюють бананову чакру…"
-  ];
-  let i = 0, p = 0;
-  const id = setInterval(() => {
-    p = Math.min(100, p + 8 + Math.random() * 6);
-    shuffleBar.style.width = p + '%';
-    if (i < steps.length && p > (i + 1) * (100 / steps.length)) {
-      shuffleCaption.textContent = steps[i++];
-    }
-    if (p >= 100) {
-      clearInterval(id);
-      setTimeout(() => startPick(), 400);
-    }
-  }, 260);
+
+  // звук (якщо хочеш використовувати)
+  // document.getElementById("shuffleSound").play();
+
+  // показуємо сцену на 3 секунди
+  setTimeout(() => {
+    startPick();
+  }, 4000);
 }
+
 
 // === Початок вибору ===
 function startPick(){
