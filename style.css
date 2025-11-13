@@ -26,7 +26,7 @@ body {
   min-height: 100%;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  gap: 14px;
+  gap: 80px;
 }
 
 header {
@@ -35,12 +35,12 @@ header {
 }
 header h1 {
   margin: 0;
-  font-size: 22px;
+  font-size: 30px;
   color: var(--accent);
   text-shadow: 0 0 6px rgba(0, 0, 0, .8);
 }
 .subtitle {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--muted);
   margin: 4px 0 0;
 }
@@ -59,11 +59,12 @@ header h1 {
 }
 .hint {
   color: var(--muted);
-  font-size: 15px;
+  font-size: 18px;
   margin: 6px 0 14px;
   text-align: center;
 }
 .center {
+  margin-top: 200px;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -183,3 +183,5 @@ btnSend.addEventListener("click", () => {
 // === Події ===
 btnShuffle.addEventListener('click', shuffleFlow);
 btnReset.addEventListener('click', () => setStage(intro));
+
+
