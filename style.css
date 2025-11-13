@@ -64,7 +64,8 @@ header h1 {
   text-align: center;
 }
 .center {
-  margin-top: 170px;
+  margin-top: 160px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
