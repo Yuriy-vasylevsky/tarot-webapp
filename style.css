@@ -84,8 +84,8 @@ footer{text-align:center;color:#bfbfbf;font-size:13px;padding:12px}
 :root {
   --accent: #ffde59;
   --muted: #b4b4b4;
-  --card-w: 90px;
-  --card-h: 140px;
+  --card-w: 100px;
+  --card-h: 160px;
   --radius: 8px;
   --dur: 1000ms;
 }
@@ -173,11 +173,11 @@ header h1 {
 
 .cards {
   display: flex;
-  gap: 16px;
+  gap: 30px;
   align-items: flex-start;
   justify-content: center;
   flex-wrap: wrap;
-  padding: 8px;
+  padding: 15px;
 }
 
 /* === Карти: плавання та фліп === */
