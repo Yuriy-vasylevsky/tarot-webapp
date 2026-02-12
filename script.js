@@ -458,7 +458,7 @@ function shuffleFlow(){
   shuffleCaption.textContent = "Міньйони тасують карти…";
 
   // SFX: shuffle
-  playSfx(sfxShuffle, { loop: true, volume: 0.7 });
+  playSfx(sfxShuffle, { loop: true, volume: 0.5 });
 
   setTimeout(() => {
     stopSfx(sfxShuffle);
@@ -485,7 +485,7 @@ function flipCard(index, node){
   if (state.chosenIndex !== null) return;
 
   // SFX: flip
-  playSfx(sfxFlip, { loop: false, volume: 0.7 });
+  playSfx(sfxFlip, { loop: false, volume: 0.5 });
 
   state.chosenIndex = index;
 
